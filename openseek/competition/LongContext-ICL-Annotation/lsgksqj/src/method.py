@@ -138,7 +138,7 @@ def select_examples_backup(all_examples:list[dict], task_description:str, text2a
             return examples_str, i
     return examples_str
 
-def select_examples(all_examples: list[dict], task_description: str, text2annotate: str) -> str:
+def select_examples(all_examples: list[dict], task_description: str, text2annotate: str, tokenizer: AutoTokenizer) -> str:
     """
         Select examples from all_examples to fit into the target context length (适配Qwen3-4B的token计算).
         all_examples:
@@ -149,9 +149,6 @@ def select_examples(all_examples: list[dict], task_description: str, text2annota
         text2annotate:
             The text that needs to be annotated  which may be used for example retrieval.
     """
-    # 初始化Qwen-Final的tokenizer（自动下载/加载千问Final的分词器）
-    # 若本地已下载模型，可替换为本地路径，如 "./qwen-final"
-    tokenizer = AutoTokenizer.from_pretrained("/root/autodl-tmp/Qwen-Final", trust_remote_code=True)
     
     # 最大上下文长度限制（Qwen3-4B的上下文窗口默认是8k/32k，可根据实际调整）
     target_length = 8192  # 若需严格适配Qwen3-4B，建议改为8192（8k）
