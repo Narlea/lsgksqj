@@ -35,12 +35,12 @@ def evaluate(task_id:int,
              qwen_tokenizer:AutoTokenizer,
              max_input_length:int=128_000,
              log_path_prefix:str='../outputs/'
-        )->float:
+        )->None:
     assert task_id in [i for i in range(1, 9)],\
         f"task_id should be in [1, 8], but got {task_id}."
     
     task_file = TASK_FILES[task_id]
-    with open(task_file, 'r') as f:
+    with open(task_file, 'r', encoding='utf-8') as f:
         task_dict = json.load(f)
     
     task_name = task_dict['task_name']
@@ -62,7 +62,7 @@ def evaluate(task_id:int,
         response_file = f'{log_path_prefix}openseek-{task_id}-v{version}_responses.txt'
     
     # 初始化文件
-    with open(output_file, 'w') as f, open(response_file, 'w') as f2:
+    with open(output_file, 'w', encoding='utf-8') as f, open(response_file, 'w', encoding='utf-8') as f2:
         pass
     
     examples_str = None
@@ -75,7 +75,7 @@ def evaluate(task_id:int,
         prompt = build_prompt(task_description, text2annotate)
         
         if examples_str is None:
-            examples_str = select_examples(icl_examples, task_description, text2annotate)
+            examples_str = select_examples(icl_examples, task_description, text2annotate, qwen_tokenizer)
         input_prompt = prompt.replace("[[EXAMPLES]]\n\n", examples_str+'\n\n')
         
         # --- 2. 获取双重返回值 ---
@@ -84,7 +84,7 @@ def evaluate(task_id:int,
         
         # --- 3. 写入原始逻辑文件 (jsonl) ---
         test_record['prediction'] = prediction
-        with open(output_file, 'a') as f:
+        with open(output_file, 'a', encoding='utf-8') as f:
             f.write(json.dumps(test_record) + '\n')
             
         # --- 4. 写入原始回复文件 (txt) ---

@@ -219,7 +219,7 @@ def count_answer(text: str):
     return None
 
 
-def annotate_nvidia(input_prompt:str)->list[str]:
+def annotate_nvidia(input_prompt:str)->tuple:
     import requests
     URL="http://127.0.0.1:2026/v1/chat/completions"
     
